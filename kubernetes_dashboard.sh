@@ -1,0 +1,16 @@
+#!/bin/bash
+
+
+image=kubernetes-dashboard-amd64:v1.10.0
+docker pull mirrorgooglecontainers/$image
+docker tag docker.io/mirrorgooglecontainers/$image k8s.gcr.io/$image
+docker rmi docker.io/mirrorgooglecontainers/$image
+
+
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+kubectl create serviceaccount dashboard -n default
+kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin  --serviceaccount=default:dashboard
+kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+
+# eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRhc2hib2FyZC10b2tlbi1oZGdyaiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkYXNoYm9hcmQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJkZjQ4MmQwNS1jN2NlLTExZTgtOWJjOS01MjU0MDA4NmFjNDUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpkYXNoYm9hcmQifQ.CbyvB9pGFnH8Vt9gTrMedmzKUmFkVtkRDKNa5bYFUHhd_12kPQfTiVI_igUsl0yeEqEaQiGyhffvRD_dCETjiKhKn_1vsAppc70o2QGYza4Z1YQTrVn_Dd6qhwhqgl7CK7g0nGIDZZS-B2jDVe8m80LRdQMhY9poeaRnBoaKMLNVjHUlHuBseByPKZYBM4vG3umsGQyXXGsWqFe-50rUGR3g6W2r91bI36PvxaJMGQlNezqS1q9W4IdhoDJEEtntOfNNeToXagcjRIVo4qXfdLa7Zsd6A0W-pp8TbS9MPiX5wCd_pnx_CfY5wtgF-mAf_WwudnTDkK3cHZ7w8-FrYg
