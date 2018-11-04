@@ -55,13 +55,16 @@ dir=/root/downloads
 file-allocation=prealloc
 EOF
 
-yum install -y git httpd
-git clone https://github.com/ziahamza/webui-aria2
-cp -a webui-aria2/docs /var/www/html/aria2
-chown -R apache.apache /var/www/html/aria2
-
-systemctl start httpd
 aria2c --conf-path=/etc/aria2/aria2.conf -D
-
 sed '/aria2/d' /etc/rc.local
 echo 'aria2c --conf-path=/etc/aria2/aria2.conf -D' >>/etc/rc.local
+
+# http://aria2c.com/
+echo "WEBUI: http://aria2c.com/"
+
+# yum install -y git httpd
+# git clone https://github.com/ziahamza/webui-aria2
+# cp -a webui-aria2/docs /var/www/html/aria2
+# chown -R apache.apache /var/www/html/aria2
+
+# systemctl start httpd
